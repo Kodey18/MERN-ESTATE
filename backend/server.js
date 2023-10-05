@@ -1,5 +1,6 @@
 const express = require('express');
 const connectDb = require('./config/mongodb');
+const errorHandler = require('./middlewares/errorHandler');
 const { default: mongoose } = require('mongoose');
 
 require('dotenv').config();
@@ -13,6 +14,10 @@ app.use(express.urlencoded({extended : true}));
 
 app.use('/api/user', require('./Routes/userRoutes'));
 app.use('/api/auth', require('./Routes/authRoutes'));
+
+
+app.use(errorHandler.notFound);
+app.use(errorHandler.catchError);
 
 
 mongoose.connection.once('open', ()=>{

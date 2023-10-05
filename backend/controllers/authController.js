@@ -15,7 +15,7 @@ const User = require('../models/userModel');
 @access : public
 */
 
-const signedUp = asyncHandler( async(req, res) => {
+const signedUp = asyncHandler( async(req, res, next) => {
     const {username, email, password} = req.body;
 
     if(!username || !email || !password){
@@ -27,9 +27,10 @@ const signedUp = asyncHandler( async(req, res) => {
     const exist = await User.findOne({email});
 
     if(exist){
-        return res.status(400).json({
-            message : `Email already exist.`,
-        });
+        // return res.status(400).json({
+        //     message : `Email already exist.`,
+        // });
+        throw new Error(`Email already exist.`);
     }
 
     try{
@@ -49,7 +50,7 @@ const signedUp = asyncHandler( async(req, res) => {
             });
         }
     }catch(err){
-        console.log(`Error in creating the user`, err);
+        throw new Error(`error creating a user, ${err}`);
     }
 });
 
