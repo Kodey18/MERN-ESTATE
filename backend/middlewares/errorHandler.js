@@ -16,9 +16,9 @@ const catchError = (err, req, res, next) => {
     }
 
     return res.status(statusCode).json({
-        sucess : false,
+        success : false,
         statusCode,
-        stack: process.env.NODE_ENV === "production" ? null : err.stack,
+        stack: process.env.NODE_ENV === "production" ? message : err.stack,
     });
 }
 

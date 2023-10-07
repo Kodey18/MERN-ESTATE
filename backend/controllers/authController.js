@@ -19,9 +19,12 @@ const signedUp = asyncHandler( async(req, res, next) => {
     const {username, email, password} = req.body;
 
     if(!username || !email || !password){
-        return res.status(400).json({
-            message : `All credntials are required.`,
-        });
+        // return res.status(400).json({
+        //     message : `All credntials are required.`,
+        // });
+        const error = new Error(`All credntials are required.`);
+        error.statusCode = 400;
+        throw error;
     }
 
     const exist = await User.findOne({email});
@@ -30,7 +33,9 @@ const signedUp = asyncHandler( async(req, res, next) => {
         // return res.status(400).json({
         //     message : `Email already exist.`,
         // });
-        throw new Error(`Email already exist.`);
+        const error = new Error(`Email already exist.`);
+        error.statusCode = 400;
+        throw error;
     }
 
     try{
@@ -46,7 +51,6 @@ const signedUp = asyncHandler( async(req, res, next) => {
         if(newUser){
             return res.status(200).json({
                 message : `User created successfully.`,
-                newUser,
             });
         }
     }catch(err){
