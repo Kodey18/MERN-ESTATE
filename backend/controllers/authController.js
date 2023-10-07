@@ -62,7 +62,7 @@ const signedIn = asyncHandler( async(req, res) => {
     const {email, password} = req.body;
 
     if(!email || !password){
-        const error = new Error(`please enter email and password`);
+        const error = new Error(`please enter email and password to sign in.`);
         error.statusCode = 400;
         throw error;
     }
