@@ -10,7 +10,7 @@ const generateToekn = (res, objId) => {
     res.cookie('jwt', {
         httpOnly : true,
         // if you want to use https only cookies set this value as true
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'development' ? false : true,
         sameSite:'strict',
         maxAge : 1000*60*60*24,
     });

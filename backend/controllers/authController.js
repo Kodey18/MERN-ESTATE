@@ -78,9 +78,10 @@ const signedIn = asyncHandler( async(req, res) => {
         }
 
         generateToekn(res, validUser._id);
+        const { password : pass, ...rest } = validUser._doc;
         return res.status(200).json({
             message : `User Authenticated sucessfully`,
-            auth : true,
+            user : rest,
         });
     }else{
         const error = new Error(`Email is not registered`);
