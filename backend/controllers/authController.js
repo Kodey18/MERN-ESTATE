@@ -1,16 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
+const generateToekn = require('../utils/generateJwt');
 
 /*
-@Desc : Register user controller
-@route : POST /register
-@access : public
-*/
-
-
-/*
-@Desc : Sign up(register) user controller
+@Desc : Sign up(register) user 
 @route : POST /signup
 @access : public
 */
@@ -58,7 +52,45 @@ const signedUp = asyncHandler( async(req, res, next) => {
     }
 });
 
+/*
+@Desc : Authenticate a user
+@route : POST /signin
+@access : public
+*/
+
+const signedIn = asyncHandler( async(req, res) => {
+    const {email, password} = req.body;
+
+    if(!email || !password){
+        const error = new Error(`please enter email and password`);
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const validUser = await User.findOne({email}).exec();
+
+    if(validUser){
+        const validPass = bcrypt.compareSync(password, validUser.password);
+        if(!validPass){
+            const error = new Error(`Invalid Email or password.`);
+            error.statusCode = 400;
+            throw error;
+        }
+
+        generateToekn(res, validUser._id);
+        return res.status(200).json({
+            message : `User Authenticated sucessfully`,
+            auth : true,
+        });
+    }else{
+        const error = new Error(`Email is not registered`);
+        error.statusCode = 400;
+        throw error;
+    }
+});
+
 
 module.exports = {
     signedUp,
+    signedIn,
 }

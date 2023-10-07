@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -27,13 +28,17 @@ const Signup = () => {
       });
 
       const data = await res.json();
-      setLoading(false);
       if(data.success === false){
         setErrors(data.stack);
         console.log(data.stack);
+        setTimeout(()=>{
+          setLoading(false);
+        },500);
         return;
       }
-      setLoading(false); 
+      setLoading(false);
+      setErrors(null);
+      navigate('/signin') 
       console.log(data);
 
     } catch(err){
@@ -43,7 +48,7 @@ const Signup = () => {
   }
 
   return (
-    <div className='max-w-lg mx-auto p-7'>
+    <div className='max-w-lg mt-24 mx-auto'>
       <h1 className="text-3xl text-center font-semibold my-7">
         Sign Up!
       </h1>
