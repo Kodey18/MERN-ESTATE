@@ -1,8 +1,11 @@
 import React from 'react';
 import {GoogleAuthProvider, getAuth, signInWithPopup} from "firebase/auth";
 import { app } from '../firebase';
+import { useDispatch } from 'react-redux';
+import { signInStart, signInSuccess } from '../redux/user/userSlice';
 
 const Oauth = () => {
+    const dispatch = useDispatch();
     const handleGoogleAuth = async() => {
         try{
             const provider = new GoogleAuthProvider();
@@ -10,6 +13,7 @@ const Oauth = () => {
 
             const result = await signInWithPopup(auth, provider);
 
+            dispatch(signInStart());
             const res = await fetch('/api/auth/google',{
                 method : 'POST',
                 headers : {
@@ -20,9 +24,13 @@ const Oauth = () => {
                     email: result.user.email,
                     photo : result.user.photoURL
                 })
-            })
+            });
+
+            const data = await res.json();
+            console.log("response here : ",data);
 
             console.log(result);
+            dispatch(signInSuccess(data));
         }catch(err){
             console.log("error in google auth : ",err);
         }
