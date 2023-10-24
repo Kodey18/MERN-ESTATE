@@ -5,6 +5,6 @@ Router.post('/signup', authController.signedUp);
 
 Router.post('/signin', authController.signedIn);
 
-Router.post('/')
+Router.post('/google', authController.authenticateGoogle);
 
 module.exports = Router;

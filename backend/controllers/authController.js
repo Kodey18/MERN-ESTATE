@@ -90,8 +90,48 @@ const signedIn = asyncHandler( async(req, res) => {
     }
 });
 
+/*
+@Desc : Authenticate a user using google
+@route : POST /google
+@access : public
+*/
+const authenticateGoogle = asyncHandler( async(req, res) => {
+    try{
+        const user = await User.findOne({email : req.body.email});
+        if(user){
+            generateToekn(res, user._id);
+            const { password : pass, ...rest } = user._doc;
+            return res.status(200).json({
+            "user" : rest,
+            });
+
+        }else{
+            const generatedPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hashSync(generatedPassword, 10);
+            const newUser = new User({
+                username : req.body.username.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
+                email : req.body.email,
+                password : hashedPassword,
+                avatar: req.body.photo,
+            });
+            await newUser.save();
+            generateToekn(res, newUser._id);
+            const { password : pass, ...rest } = newUser._doc;
+            return res.status(200).json({
+            "user" : rest,
+            });
+        }
+    }catch(err){
+        const error = new Error(`Error in google auth.`);
+        error.statusCode = 400;
+        throw error;
+    }
+})
+
+
 
 module.exports = {
     signedUp,
     signedIn,
+    authenticateGoogle,
 }
