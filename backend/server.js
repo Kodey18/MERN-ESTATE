@@ -2,6 +2,7 @@ const express = require('express');
 const connectDb = require('./config/mongodb');
 const errorHandler = require('./middlewares/errorHandler');
 const { default: mongoose } = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
+app.use(cookieParser());
 
 app.use('/api/user', require('./Routes/userRoutes'));
 app.use('/api/auth', require('./Routes/authRoutes'));

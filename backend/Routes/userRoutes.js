@@ -1,3 +1,6 @@
+const verifyToekn = require('../utils/verifyToken');
+const userController = require('../controllers/userController');
+
 const Router = require('express').Router();
 
 Router.get('/profile', (req, res)=>{
@@ -5,5 +8,7 @@ Router.get('/profile', (req, res)=>{
         message : `User profile here`,
     });
 });
+
+Router.post('/update/:id', verifyToekn, userController.updateUser);
 
 module.exports = Router;
