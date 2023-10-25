@@ -18,28 +18,34 @@ const Profile = () => {
   }, [files]);
 
   const handleFiles = async(files) => {
-              const storage = getStorage(app);
-              const fileName = new Date().getTime() + files.name;
-              const storageRef = ref(storage, fileName);
-              const uploadTask = uploadBytesResumable(storageRef, files);
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + files.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, files);
 
-              uploadTask.on("state_changed", (snapshot) => {
-                const progress =
-                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                // console.log("upload is " + progress + "% done");
-                setFilePerc(Math.round(progress));
-              },
-              (error) =>{
-                setFileUploadError(true);
-              },
-              ()=>{
-                getDownloadURL(uploadTask.snapshot.ref).then(
-                  (downloadURL)=>{
-                    setFormData({...formData, avatar: downloadURL});
-                  }
-                )
-              },
-              );
+    uploadTask.on("state_changed", (snapshot) => {
+      const progress =
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      // console.log("upload is " + progress + "% done");
+      setFilePerc(Math.round(progress));
+    },
+    (error) =>{
+      setFileUploadError(true);
+    },
+    ()=>{
+      getDownloadURL(uploadTask.snapshot.ref).then(
+        (downloadURL)=>{
+          setFormData({...formData, avatar: downloadURL});
+        }
+      )
+    },
+    );
+  }
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData, [e.target.id] : e.target.value
+    });
   }
 
   return (
@@ -53,6 +59,7 @@ const Profile = () => {
           alt="Avatar"
           className="rounded-full h-36 w-36 object-cover self-center cursor-pointer"
         />
+
         <p className='self-center text-sm'>
           {
             fileUploadError ? 
@@ -71,9 +78,25 @@ const Profile = () => {
               )
           }
         </p>
-        <input type="text" placeholder="username" className="p-3 rounded-xl" id='username'/>
-        <input type="text" placeholder="email" className="p-3 rounded-xl" id='email'/>
+
+        <input 
+        type="text" 
+        placeholder="username" 
+        className="p-3 rounded-xl" id='username' 
+        defaultValue={currentUser.username}
+        onChange={handleChange}
+        />
+
+        <input 
+        type="text" 
+        placeholder="email" 
+        className="p-3 rounded-xl" id='email'
+        defaultValue={currentUser.email}
+        onChange={handleChange}
+        />
+
         <input type="text" placeholder="password" className="p-3 rounded-xl" id='password'/>
+
         <button className='uppercase bg-slate-800 font-semibold text-white p-4 rounded-xl'>
           Update
         </button>
