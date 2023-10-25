@@ -48,6 +48,10 @@ const Profile = () => {
     });
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  }
+  
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-3xl font-semibold text-center my-5">Profile</h1>
