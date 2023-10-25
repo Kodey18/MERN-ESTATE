@@ -9,6 +9,9 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signOutUserStart,
+  signOutUserFailure,
+  signOutUserSuccess,
 } from '../redux/user/userSlice';
 
 const Profile = () => {
@@ -107,13 +110,29 @@ const Profile = () => {
   }
 
   const handleSignOut = async(e) => {
-    e.preventDefault();
+    try{
+      dispatch(signOutUserStart());
+
+      const res = await fetch('/api/auth/signout', {
+        method: 'GET',
+      });
+
+      const data = await res.json();
+      if(data.success === false){
+        dispatch(signOutUserFailure(data.stack));
+        return;
+      }
+      localStorage.removeItem('persist:root');
+      dispatch(signOutUserSuccess());
+    }catch(err){
+      console.log("Error in sign out", err);
+    }
   }
   
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-3xl font-semibold text-center my-5">Profile</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 bg-slate-500 p-8 rounded-xl">
         <input
           onChange={(e) => setFiles(e.target.files[0])}
           type="file"
@@ -137,7 +156,7 @@ const Profile = () => {
               {`Uploading image ${filePerc}%`}
             </span>
           ) : filePerc === 100 ? (
-            <span className="text-green-700">Image Uploaded Successfully!</span>
+            <span className="text-green-900">Image Uploaded Successfully!</span>
           ) : (
             ""
           )}
@@ -175,12 +194,18 @@ const Profile = () => {
           {loading ? "Loading..." : "Update"}
         </button>
       </form>
-      <div className="text-red-700 font-medium text-lg flex justify-between mt-4">
-        <span className='cursor-pointer' onClick={handleDeleteUser}>Delete Account</span>
-        <span>Sign out</span>
+      <div className="text-red-700 font-medium text-lg flex justify-between mt-4 ">
+        <span className="cursor-pointer hover:underline transition-all" onClick={handleDeleteUser}>
+          Delete Account
+        </span>
+        <span className="cursor-pointer hover:underline transition-all" onClick={handleSignOut}>
+          Sign out
+        </span>
       </div>
       {errors && <p className="text-red-600">{errors}</p>}
-      {updateSuccess && <p className='text-green-700'>User is updated Successfully</p>}
+      {updateSuccess && (
+        <p className="text-green-700">User is updated Successfully</p>
+      )}
     </div>
   );
 }
