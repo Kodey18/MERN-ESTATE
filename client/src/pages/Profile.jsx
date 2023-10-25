@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import { app } from '../firebase';
-import {updateUserStart, updateUserSuccess, updateUserFailure} from '../redux/user/userSlice';
+import {
+  updateUserStart,
+  updateUserSuccess, 
+  updateUserFailure, 
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from '../redux/user/userSlice';
 
 const Profile = () => {
   const {currentUser, loading, errors} = useSelector(state => state.user);
@@ -11,7 +18,7 @@ const Profile = () => {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
-  const [updateSuccess, setUpdateSuccess] = useState(fasle);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -74,10 +81,31 @@ const Profile = () => {
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     }catch(err){
-      console.log('submit error', err);
+      dispatch(deleteUserFailure(err));
     }
   }
 
+  const handleDeleteUser = async(e) => {
+    e.preventDefault();
+
+    try{
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+      if(data.success === false){
+        dispatch(deleteUserFailure(data.stack));
+        return;
+      }
+
+      dispatch(deleteUserSuccess());
+    }catch(err){
+      console.log("error while deleting : ", err);
+    }
+  }
+  
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-3xl font-semibold text-center my-5">Profile</h1>
@@ -144,7 +172,7 @@ const Profile = () => {
         </button>
       </form>
       <div className="text-red-700 font-medium text-lg flex justify-between mt-4">
-        <span>Delete Account</span>
+        <span className='cursor-pointer' onClick={handleDeleteUser}>Delete Account</span>
         <span>Sign out</span>
       </div>
       {errors && <p className="text-red-600">{errors}</p>}

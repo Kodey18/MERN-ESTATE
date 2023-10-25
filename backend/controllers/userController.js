@@ -43,8 +43,34 @@ const updateUser = asyncHandler( async(req, res) => {
         error.statusCode = 401;
         throw error;
     }
-})
+});
+
+/*
+Desc : Delete User Account
+Route : POST /api/user/delete
+access : Private
+*/
+const deleteUser = asyncHandler( async(req, res) => {
+    if (req.user.objId !== req.params.id) {
+        const error = new Error("You can only delete your own account!");
+        error.statusCode = 401;
+        throw error;
+    }
+
+    try{
+        await User.findByIdAndDelete(req.params.id);
+        res.clearCookie("jwt");
+        return res.status(200).json({
+            message : 'Account deleted successfully!',
+        });
+    }catch(err){
+        const error = new Error("error while deleting", err);
+        error.statusCode = 401;
+        throw error;
+    }
+});
 
 module.exports = {
     updateUser,
+    deleteUser,
 }

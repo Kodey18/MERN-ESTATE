@@ -11,4 +11,6 @@ Router.get('/profile', (req, res)=>{
 
 Router.post('/update/:id', verifyToekn, userController.updateUser);
 
+Router.delete('/delete/:id', verifyToekn, userController.deleteUser);
+
 module.exports = Router;
