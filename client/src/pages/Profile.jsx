@@ -105,6 +105,10 @@ const Profile = () => {
       console.log("error while deleting : ", err);
     }
   }
+
+  const handleSignOut = async(e) => {
+    e.preventDefault();
+  }
   
   return (
     <div className="max-w-lg mx-auto p-4">
