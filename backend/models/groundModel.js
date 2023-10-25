@@ -22,6 +22,14 @@ const groundSchema = new mongoose.Schema({
     default: null,
     required: true,
   },
+  offer:{
+    type:Boolean,
+    required: true,
+  },
+  imageUrls: {
+    type: Array,
+    required: true,
+  },
   capacity: {
     type: Number,
     required: true,
@@ -40,6 +48,10 @@ const groundSchema = new mongoose.Schema({
   },
   pets: {
     type: Boolean,
+    required: true,
+  },
+  userRef: {
+    type: String,
     required: true,
   },
 },
