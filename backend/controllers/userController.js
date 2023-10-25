@@ -19,6 +19,8 @@ const updateUser = asyncHandler( async(req, res) => {
             req.body.password = bcryptjs.hashSync(req.body.password, 10);
         }
 
+        console.log("req data : ",req.body.username);
+
         const updateUser = await User.findByIdAndUpdate(req.params.id, {
             $set:{
                 username : req.body.username,
@@ -29,9 +31,12 @@ const updateUser = asyncHandler( async(req, res) => {
         }, {
             new : true
         });
+        console.log(updateUser);
 
         const {password, ...rest} = updateUser._doc;
-        return res.status(200).json({rest});
+        return res.status(200).json({
+            "user" : rest
+        });
 
     }catch(err){
         const error = new Error('error while uploading',err);

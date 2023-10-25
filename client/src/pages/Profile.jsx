@@ -1,15 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import { app } from '../firebase';
+import {updateUserStart, updateUserSuccess, updateUserFailure} from '../redux/user/userSlice';
 
 const Profile = () => {
-  const {currentUser} = useSelector(state => state.user);
+  const {currentUser, loading, errors} = useSelector(state => state.user);
   const fileRef = useRef(null);
   const [files, setFiles] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if(files){
@@ -48,67 +50,102 @@ const Profile = () => {
     });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    try{
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers : {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if(data.success === false){
+        console.log(data);
+        dispatch(updateUserFailure(data.stack));
+        return;
+      }
+
+      console.log(data);
+      dispatch(updateUserSuccess(data));
+    }catch(err){
+      console.log('submit error', err);
+    }
   }
-  
+
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-3xl font-semibold text-center my-5">Profile</h1>
-      <form action="" className="flex flex-col gap-5">
-        <input onChange={(e) =>setFiles(e.target.files[0])} type="file" ref={fileRef} accept='image/*' hidden/>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <input
+          onChange={(e) => setFiles(e.target.files[0])}
+          type="file"
+          ref={fileRef}
+          accept="image/*"
+          hidden
+        />
         <img
-          onClick={()=>fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
+          onClick={() => fileRef.current.click()}
+          src={formData?.avatar || currentUser.avatar}
           alt="Avatar"
           className="rounded-full h-36 w-36 object-cover self-center cursor-pointer"
+          id="avatar"
         />
 
-        <p className='self-center text-sm'>
-          {
-            fileUploadError ? 
-            (
-              <span className='text-red-800'>Error Image Upload</span>
-            ) : filePerc > 0 && filePerc < 100 ? (
-              <span className='text-slate-800'>
-                {`Uploading image ${filePerc}%`}
-              </span>
-              ) : filePerc === 100 ? (
-                <span className='text-green-700'>
-                  Image Uploaded Successfully!
-                </span>
-              ) : (
-                ''
-              )
-          }
+        <p className="self-center text-sm">
+          {fileUploadError ? (
+            <span className="text-red-800">Error Image Upload</span>
+          ) : filePerc > 0 && filePerc < 100 ? (
+            <span className="text-slate-800">
+              {`Uploading image ${filePerc}%`}
+            </span>
+          ) : filePerc === 100 ? (
+            <span className="text-green-700">Image Uploaded Successfully!</span>
+          ) : (
+            ""
+          )}
         </p>
 
-        <input 
-        type="text" 
-        placeholder="username" 
-        className="p-3 rounded-xl" id='username' 
-        defaultValue={currentUser.username}
-        onChange={handleChange}
+        <input
+          type="text"
+          placeholder="username"
+          className="p-3 rounded-xl"
+          id="username"
+          defaultValue={currentUser.username}
+          onChange={handleChange}
         />
 
-        <input 
-        type="text" 
-        placeholder="email" 
-        className="p-3 rounded-xl" id='email'
-        defaultValue={currentUser.email}
-        onChange={handleChange}
+        <input
+          type="text"
+          placeholder="email"
+          className="p-3 rounded-xl"
+          id="email"
+          defaultValue={currentUser.email}
+          onChange={handleChange}
         />
 
-        <input type="text" placeholder="password" className="p-3 rounded-xl" id='password'/>
+        <input
+          type="text"
+          placeholder="password"
+          className="p-3 rounded-xl"
+          id="password"
+        />
 
-        <button className='uppercase bg-slate-800 font-semibold text-white p-4 rounded-xl'>
-          Update
+        <button
+          type="submit"
+          className="uppercase bg-slate-800 font-semibold text-white p-4 rounded-xl"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
-      <div className='text-red-700 font-medium text-lg flex justify-between mt-4'>
+      <div className="text-red-700 font-medium text-lg flex justify-between mt-4">
         <span>Delete Account</span>
         <span>Sign out</span>
       </div>
+      {errors && <p className="text-red-600">{errors}</p>}
     </div>
   );
 }
