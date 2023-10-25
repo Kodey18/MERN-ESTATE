@@ -47,7 +47,7 @@ const updateUser = asyncHandler( async(req, res) => {
 
 /*
 Desc : Delete User Account
-Route : POST /api/user/delete
+Route : DELETE /api/user/delete
 access : Private
 */
 const deleteUser = asyncHandler( async(req, res) => {
@@ -70,7 +70,26 @@ const deleteUser = asyncHandler( async(req, res) => {
     }
 });
 
+/*
+Desc : Sign Out User Account
+Route : GET /api/user/delete
+access : Private
+*/
+const userSignOut = asyncHandler( async(req, res) => {
+    try{
+        res.clearCookie("jwt");
+        return res.status(200).json({
+            message: "Logged out!"
+        });
+    } catch(err){
+        const error = new Error("error while logging out", err);
+        error.statusCode = 401;
+        throw error;
+    }
+})
+
 module.exports = {
     updateUser,
     deleteUser,
+    userSignOut,
 }
