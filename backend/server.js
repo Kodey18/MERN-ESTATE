@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use('/api/user', require('./Routes/userRoutes'));
 app.use('/api/auth', require('./Routes/authRoutes'));
-app.use('/api/listing', require('./Routes/campGroundsRoutes'));
+app.use('/api/ground', require('./Routes/campGroundsRoutes'));
 
 
 app.use(errorHandler.notFound);
