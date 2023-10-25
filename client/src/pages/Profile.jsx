@@ -132,7 +132,7 @@ const Profile = () => {
   return (
     <div className="max-w-lg mx-auto p-4">
       <h1 className="text-3xl font-semibold text-center my-5">Profile</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 bg-slate-500 p-8 rounded-xl">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-slate-500 p-6 rounded-xl">
         <input
           onChange={(e) => setFiles(e.target.files[0])}
           type="file"
