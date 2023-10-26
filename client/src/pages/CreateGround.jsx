@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import AccommodationDropdown from '../components/DropDown';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { set } from 'mongoose';
 
 const CreateGround = () => {
   const [files, setFiles] = useState([]);
@@ -15,6 +16,8 @@ const CreateGround = () => {
     e.preventDefault();
 
     if(files.length > 0 && files.length + formData.imageUrls.length < 7){
+      setImageLoading(true);
+      setImageUploadError(false);
       const promises = [];
 
       for(let i = 0; i < files.length; i++){
@@ -25,6 +28,7 @@ const CreateGround = () => {
         setFormData({
           ...formData, imageUrls : formData.imageUrls.concat(urls)
         });
+        setImageLoading(false);
         setImageUploadError(false);
       }).catch((err)=>{
         setImageUploadError(true);
@@ -272,7 +276,7 @@ const CreateGround = () => {
                 type="button"
                 className="p-3 text-green-900 border text-xl border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
               >
-                Upload
+                {imageLoading ? "Uploading..." : "Upload"}
               </button>
             </div>
             {imageUploadError && (
