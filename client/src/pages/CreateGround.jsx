@@ -1,8 +1,69 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AccommodationDropdown from '../components/DropDown';
-import Map from '../components/Map'
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../firebase';
 
 const CreateGround = () => {
+  const [files, setFiles] = useState([]);
+  const [formData, setFormData] = useState({
+    imageUrls : [],
+  });
+  const [imageUploadError, setImageUploadError] = useState();
+  const [imageLoading, setImageLoading] = useState(false);
+
+  const handleImageUpload = (e) => {
+    e.preventDefault();
+
+    if(files.length > 0 && files.length + formData.imageUrls.length < 7){
+      const promises = [];
+
+      for(let i = 0; i < files.length; i++){
+        promises.push(storeImage(files[i]));
+      }
+
+      Promise.all(promises).then((urls) => {
+        setFormData({
+          ...formData, imageUrls : formData.imageUrls.concat(urls)
+        });
+        setImageUploadError(false);
+      }).catch((err)=>{
+        setImageUploadError(true);
+      });
+    } else {
+      setImageUploadError("You can only add up to 6 images");
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  }
+
+  const storeImage = async(file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`progress : ${progress}`);
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        },
+        );
+    });
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -115,6 +176,39 @@ const CreateGround = () => {
               </div>
             </div>
           </div>
+
+          {formData.imageUrls.length > 0 && (
+            <div className="flex flex-col gap-8 my-6 mb-16">
+              <span className="font-semibold text-xl">
+                Images Uploaded are :
+              </span>
+              <div className="flex flex-wrap gap-10">
+                {formData.imageUrls.length > 0 &&
+                  formData.imageUrls.map((Url, index) => {
+                    return (
+                      <div 
+                      key={Url}
+                      className="p-2 flex flex-col items-center gap-2 rounded-lg border border-slate-900 bg-slate-500"
+                      >
+                        <img
+                          src={Url}
+                          alt="Camp Image"
+                          className="w-32 h-32 object-cover rounded-lg"
+                        />
+                        <button 
+                        type='button'
+                        className="text-black-700 hover:underline cursor-pointer hover:font-semibold hover:text-lg transition-all "
+                        onClick={() => handleRemoveImage(index)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
           {/* 
           <input
             type="number"
@@ -171,11 +265,26 @@ const CreateGround = () => {
                 accept="image/*"
                 multiple
                 className="p-3 border border-gray-400 rounded w-full"
+                onChange={(e) => setFiles(e.target.files)}
               />
-              <button className="p-3 text-green-900 border text-xl border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80">
+              <button
+                onClick={handleImageUpload}
+                type="button"
+                className="p-3 text-green-900 border text-xl border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+              >
                 Upload
               </button>
             </div>
+            {imageUploadError && (
+              <p className="text-red-700 text-lg font-medium">
+                {imageUploadError}
+              </p>
+            )}
+            {!imageUploadError && formData.imageUrls.length > 0 && (
+              <p className="text-green-700 text-lg font-medium">
+                Image uploaded successfully
+              </p>
+            )}
           </div>
           <button className="p-3 bg-slate-800 text-white rounded-lg text-xl">
             Create CampGround
