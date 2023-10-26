@@ -1,5 +1,6 @@
 import React from 'react'
 import AccommodationDropdown from '../components/DropDown';
+import Map from '../components/Map'
 
 const CreateGround = () => {
 
@@ -8,7 +9,7 @@ const CreateGround = () => {
       <h1 className="text-3xl font-semibold my-6 text-center">
         Create a Cmaping Ground.
       </h1>
-      <form className="flex flex-col sm:flex-row gap-10">
+      <form className="flex flex-col sm:flex-row gap-10 mt-16">
         <div className="flex flex-col flex-1 gap-5">
           <input
             type="text"
@@ -138,6 +139,23 @@ const CreateGround = () => {
             className="p-3 border border-gray-500 rounded-lg"
             required
           />
+          <span className="font-semibold text-lg">
+            Add Location of Camp Ground :
+          </span>
+          <input
+            type="text"
+            name="Latitude"
+            placeholder="Latitude : 51.505 (Only Value)"
+            className="p-3 border border-gray-500 rounded-lg"
+            required
+          />
+          <input
+            type="text"
+            name="Longitude"
+            placeholder="Longitude : -36.56 (Only value)"
+            className="p-3 border border-gray-500 rounded-lg"
+            required
+          />
 
           <div className="flex flex-col gap-2">
             <p className="font-semibold">
@@ -159,7 +177,9 @@ const CreateGround = () => {
               </button>
             </div>
           </div>
-          <button className="p-3 bg-slate-800 text-white rounded-lg text-xl">Create CampGround</button>
+          <button className="p-3 bg-slate-800 text-white rounded-lg text-xl">
+            Create CampGround
+          </button>
         </div>
       </form>
     </div>
