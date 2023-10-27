@@ -39,6 +39,27 @@ const Profile = () => {
         }
     }
 
+    const handleGroundDelete = async(gid) => {
+        try{
+            const res = await fetch(`/api/ground/delete/${gid}`, {
+                method: "DELETE",
+            });
+
+            const data = await res.json();
+
+            if(data.success === false){
+                alert("Failed to delete ground");
+                return;
+            }
+
+            console.log(data);
+            setUserGrounds((prev) => prev.filter((ground) => ground._id !== gid));
+            alert(`Ground deleted successfully.`);
+        }catch(err){
+            console.log(err);
+        }
+    }
+
   return (
     <div >
         <div className='max-w-lg p-5 flex flex-col gap-2'>
@@ -61,7 +82,7 @@ const Profile = () => {
                                 <p>{ground.name}</p>
                             </Link>
                             <div className='flex flex-col gap-1 items-center'>
-                                <button className='text-red-700 text-lg flex gap-1 items-center font-semibold'>
+                                <button onClick={() => handleGroundDelete(ground._id)} className='text-red-700 text-lg flex gap-1 items-center font-semibold'>
                                     <span className='uppercase'>delete</span> 
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>

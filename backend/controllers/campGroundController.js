@@ -66,7 +66,29 @@ Desc : Route to delete a listed camping ground.
 Route: DELETE /api/ground/create
 access: private
 */
-const deleteGround = asyncHnadler( async(req, res) => {});
+const deleteGround = asyncHnadler( async(req, res) => {
+    const ground = await Ground.findById(req.params.id);
+    if(!ground){
+        const error = new Error(`No such ground Found.`);
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if(req.user.objId !== ground.userRef.toString()){
+        const error = new Error(`You can only delete your own Ground.`);
+        error.statusCode = 401;
+        throw error;
+    }
+
+    try{
+        await Ground.findByIdAndDelete(req.params.id);
+        return res.status(200).json('Camp Ground has been deleted.')
+    }catch(err){
+        const error = new Error(`Error deleting ground ${err}`);
+        error.statusCode = 400;
+        throw error;
+    }
+});
 
 module.exports = {
     createGrounds,
