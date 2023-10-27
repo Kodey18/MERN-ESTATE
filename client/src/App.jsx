@@ -8,12 +8,14 @@ import Profile from './pages/Profile'
 import Header from './components/Header'
 import PrivateRoutes from './components/PrivateRoutes'
 import CreateGround from './pages/CreateGround'
+import UpdateProfile from './pages/UpdateProfile'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
+        
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
@@ -22,8 +24,10 @@ export default function App() {
         {/* Protected Routes */}
         <Route element={<PrivateRoutes />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path='/update-profile' element={<UpdateProfile />} />
           <Route path='/create-ground' element={<CreateGround />} />
         </Route>
+
       </Routes>
     </BrowserRouter>
   );
