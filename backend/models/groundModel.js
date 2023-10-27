@@ -42,11 +42,11 @@ const groundSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    regularPrice: {
+    Rprice: {
       type: Number,
       required: true,
     },
-    discountedPrice: {
+    Dprice: {
       type: Number,
       default: null,
       required: true,

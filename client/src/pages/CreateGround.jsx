@@ -1,16 +1,30 @@
 import React, { useState } from 'react'
-import AccommodationDropdown from '../components/DropDown';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { set } from 'mongoose';
 
 const CreateGround = () => {
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    address: '',
+    pets: false,
+    tours: false,
+    rentalEquip: false,
+    foodService: false,
+    accommodation: "",
+    intake: 0,
+    sites: 0,
+    Rprice: 0,
+    Dprice: 0,
+    amenities: "",
+    activities: "",
     imageUrls : [],
   });
   const [imageUploadError, setImageUploadError] = useState();
   const [imageLoading, setImageLoading] = useState(false);
+
+  console.log(formData);
 
   const handleImageUpload = (e) => {
     e.preventDefault();
@@ -69,6 +83,30 @@ const CreateGround = () => {
     });
   }
 
+  const handleChange = (e) => {
+    const {name, type, value, checked} = e.target
+
+    const newValue = type === 'checked' ? !formData[name] : value;
+
+    setFormData({
+      ...formData,
+      [e.target.name]: newValue,
+    });
+  }
+
+  const handleStringChange = (e) => {
+    const { name, value } = e.target;
+
+    // Split the comma-separated value into an array
+    const valueArray = value.split(",").map((item) => item.trim());
+
+    // Update the state
+    setFormData({
+      ...formData,
+      [name]: valueArray,
+    });
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-semibold my-6 text-center">
@@ -82,6 +120,8 @@ const CreateGround = () => {
             placeholder="Name"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleChange}
+            value={formData.name}
           />
           <textarea
             type="text"
@@ -89,6 +129,8 @@ const CreateGround = () => {
             placeholder="Description"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleChange}
+            value={formData.description}
           />
           <input
             type="text"
@@ -96,26 +138,44 @@ const CreateGround = () => {
             placeholder="Address"
             className="p-3 border rounded-lg border-gray-500"
             required
+            onChange={handleChange}
+            value={formData.address}
           />
           <div className="flex gap-4 flex-wrap">
             <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
-              <input type="checkbox" name="pets" id="pets" className="w-5" />
+              <input
+                type="checkbox"
+                name="pets"
+                id="pets"
+                className="w-5"
+                onChange={handleChange}
+                checked={formData.pets}
+              />
               <label htmlFor="pets">Pets</label>
-            </div>
-
-            <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
-              <input type="checkbox" name="Tours" id="Tours" className="w-5" />
-              <label htmlFor="Tours">Guided Tours</label>
             </div>
 
             <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
               <input
                 type="checkbox"
-                name="rentalEqip"
+                name="tours"
+                id="tours"
+                className="w-5"
+                onChange={handleChange}
+                checked={formData.tours}
+              />
+              <label htmlFor="tours">Guided Tours</label>
+            </div>
+
+            <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
+              <input
+                type="checkbox"
+                name="rentalEquip"
                 id="rentalEquip"
                 className="w-5"
+                onChange={handleChange}
+                checked={formData.rentalEquip}
               />
-              <label htmlFor="rentalEquip">Rental Wquipments</label>
+              <label htmlFor="rentalEquip">Rental Equipments</label>
             </div>
 
             <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
@@ -124,11 +184,28 @@ const CreateGround = () => {
                 name="foodService"
                 id="foodService"
                 className="w-5"
+                onChange={handleChange}
+                checked={formData.foodService}
               />
               <label htmlFor="foodService">Food Service</label>
             </div>
+
             <div className="p-2 bg-slate-400 rounded-lg">
-              <AccommodationDropdown />
+              <div className="flex gap-2 text-lg font-semibold">
+                <label htmlFor="accommodation">Accommodation:</label>
+                <select
+                  id="accommodation"
+                  onChange={handleChange}
+                  name='accommodation'
+                  value={formData.accommodation}
+                >
+                  <option value="">Select an Accommodation</option>
+                  <option value="Tents">Tents</option>
+                  <option value="Cabins">Cabins</option>
+                  <option value="RVs">RVs</option>
+                  <option value="Glamping">Tree House</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -136,13 +213,16 @@ const CreateGround = () => {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                name="capacity"
-                id="capacity"
+                name="intake"
+                id="intake"
                 className="w-16 p-3 border border-gray-400 rounded-lg"
                 required
+                onChange={handleChange}
+                value={formData.intake}
               />
               <label htmlFor="capacity">Intake</label>
             </div>
+
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -150,9 +230,12 @@ const CreateGround = () => {
                 id="sites"
                 className="w-16 p-3 border border-gray-500 rounded-lg"
                 required
+                onChange={handleChange}
+                value={formData.sites}
               />
               <label htmlFor="sites">sites</label>
             </div>
+
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -160,12 +243,15 @@ const CreateGround = () => {
                 id="Rprice"
                 className="w-16 p-3 border border-gray-500 rounded-lg"
                 required
+                onChange={handleChange}
+                value={formData.Rprice}
               />
               <div className="flex items-center flex-col">
                 <label htmlFor="Rprice">Regular Price</label>
                 <span className="text-sm">($ / day)</span>
               </div>
             </div>
+
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -173,6 +259,8 @@ const CreateGround = () => {
                 id="Dprice"
                 className="w-16 p-3 border border-gray-500 rounded-lg"
                 required
+                onChange={handleChange}
+                value={formData.Dprice}
               />
               <div className="flex items-center flex-col">
                 <label htmlFor="Dprice">Discounted Price</label>
@@ -190,19 +278,19 @@ const CreateGround = () => {
                 {formData.imageUrls.length > 0 &&
                   formData.imageUrls.map((Url, index) => {
                     return (
-                      <div 
-                      key={Url}
-                      className="p-2 flex flex-col items-center gap-2 rounded-lg border border-slate-900 bg-slate-500"
+                      <div
+                        key={Url}
+                        className="p-2 flex flex-col items-center gap-2 rounded-lg border border-slate-900 bg-slate-500"
                       >
                         <img
                           src={Url}
                           alt="Camp Image"
                           className="w-32 h-32 object-cover rounded-lg"
                         />
-                        <button 
-                        type='button'
-                        className="text-black-700 hover:underline cursor-pointer hover:font-semibold hover:text-lg transition-all "
-                        onClick={() => handleRemoveImage(index)}
+                        <button
+                          type="button"
+                          className="text-black-700 hover:underline cursor-pointer hover:font-semibold hover:text-lg transition-all "
+                          onClick={() => handleRemoveImage(index)}
                         >
                           Delete
                         </button>
@@ -212,47 +300,52 @@ const CreateGround = () => {
               </div>
             </div>
           )}
-
-          {/* 
-          <input
-            type="number"
-            name="discountedPrice"
-            placeholder="Discounted price"
-          />
-          <input type="checkbox" name="offer" /> */}
         </div>
 
         <div className="flex flex-col flex-1 gap-5">
           <input
             type="text"
             name="amenities"
+            id="amenities"
             placeholder="Amenities (comma-separated)"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleStringChange}
+            value={formData.amenities}
           />
+
           <input
             type="text"
             name="activities"
+            id="activities"
             placeholder="Activities (comma-separated)"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleStringChange}
+            value={formData.activities}
           />
+
           <span className="font-semibold text-lg">
             Add Location of Camp Ground :
           </span>
           <input
-            type="text"
+            type="number"
             name="Latitude"
             placeholder="Latitude : 51.505 (Only Value)"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleChange}
+            // value={formData.lat}
           />
+
           <input
-            type="text"
+            type="number"
             name="Longitude"
             placeholder="Longitude : -36.56 (Only value)"
             className="p-3 border border-gray-500 rounded-lg"
             required
+            onChange={handleChange}
+            // value={formData.lng}
           />
 
           <div className="flex flex-col gap-2">
