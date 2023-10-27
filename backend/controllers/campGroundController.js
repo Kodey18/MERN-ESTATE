@@ -25,7 +25,6 @@ const createGrounds = asyncHnadler( async(req, res) => {
         imageUrls,
         Latitude,
         Longitude,
-        userRef,
     } = req.body; // Assuming you're sending data in the request body
 
     const lat = parseFloat(Latitude);
