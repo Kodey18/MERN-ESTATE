@@ -7,6 +7,6 @@ Router.post('/update/:id', verifyToekn, userController.updateUser);
 
 Router.delete('/delete/:id', verifyToekn, userController.deleteUser);
 
-Router.get(`/userListing/:id`, verifyToekn, userController)
+Router.get(`/userGrounds/:id`, verifyToekn, userController)
 
 module.exports = Router;

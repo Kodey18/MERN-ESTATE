@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const bcryptjs = require('bcryptjs');
 const User = require('../models/userModel');
+const Ground = require('../models/groundModel');
 
 /*
 Desc : update the user details
@@ -69,6 +70,28 @@ const deleteUser = asyncHandler( async(req, res) => {
         throw error;
     }
 });
+
+/*
+Desc : Get all user grounds
+Route : GET /api/user/userGround
+access : Private
+*/
+const getUserGorunds = asyncHandler( async(req, res) => {
+    if(req.user.objId !== req.params.id){
+        const error = new Error("You can only Veiw your own Grounds.");
+        error.statusCode = 401;
+        throw error;
+    } else {
+        try{
+            const grounds = await Ground.find({userRef : req.params.id});
+            return res.status(200).json(grounds);
+        }catch(err){
+            const error = new Error("error while getting ground", err);
+            error.statusCode = 401;
+            throw error;
+        }
+    }
+})
 
 
 
