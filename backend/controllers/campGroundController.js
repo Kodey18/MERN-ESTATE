@@ -63,7 +63,7 @@ const createGrounds = asyncHnadler( async(req, res) => {
 
 /*
 Desc : Route to delete a listed camping ground.
-Route: DELETE /api/ground/create
+Route: DELETE /api/ground/create/:id
 access: private
 */
 const deleteGround = asyncHnadler( async(req, res) => {
@@ -90,7 +90,16 @@ const deleteGround = asyncHnadler( async(req, res) => {
     }
 });
 
+/*
+Desc : Route to update a listed camping ground.
+Route: POST /api/ground/update/:id
+access: private
+*/
+const updateGround = asyncHnadler( async(req, res) => {
+})
+
 module.exports = {
     createGrounds,
     deleteGround,
+    updateGround,
 };
