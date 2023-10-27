@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Profile = () => {
     const {currentUser} = useSelector(state => state.user);
@@ -38,15 +40,15 @@ const Profile = () => {
     }
 
   return (
-    <div>
-        <div className='max-w-xl p-5'>
-            <button onClick={handleShowGrounds} className='bg-slate-700 text-white font-semibold p-3 text-lg'>
+    <div >
+        <div className='max-w-lg p-5 flex flex-col gap-1'>
+            <button onClick={handleShowGrounds} className='max-w-xs rounded-lg bg-slate-700 text-white font-semibold p-3 text-lg'>
                 {groundLoad ? "loading Grounds..." : "Show Grounds"}
             </button>
             {showGroundError && <p className='text-red-700'>Error showing Grounds.</p>}
             {
                 userGrounds && userGrounds.length > 0 &&
-                <div>
+                <div className='flex flex-col gap-3'>
                     {userGrounds.map((ground, index) => {
                         return <div className='gap-3 border border-gray-500 flex justify-between items-center rounded-lg p-3' key={ground._id}
                         >
@@ -58,7 +60,16 @@ const Profile = () => {
                             >
                                 <p>{ground.name}</p>
                             </Link>
-                            <div></div>
+                            <div className='flex flex-col gap-1 items-center'>
+                                <button className='text-red-700 text-lg flex gap-1 items-center font-semibold'>
+                                    <span className='uppercase'>delete</span> 
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                                <button className='text-green-700 text-lg flex gap-1 items-center font-semibold'>
+                                    <span className='uppercase'>Edit</span> 
+                                    <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                            </div>
                         </div>
                     })}
                 </div>
