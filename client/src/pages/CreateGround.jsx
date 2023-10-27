@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const CreateGround = () => {
   const [files, setFiles] = useState([]);
@@ -23,8 +24,9 @@ const CreateGround = () => {
   });
   const [imageUploadError, setImageUploadError] = useState();
   const [imageLoading, setImageLoading] = useState(false);
-
-  console.log(formData);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleImageUpload = (e) => {
     e.preventDefault();
@@ -107,12 +109,51 @@ const CreateGround = () => {
     });
   }
 
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    try{
+      if(formData.imageUrls.length < 1){
+        return setError("You must upload atleast 1 image.");
+      }
+      if(+formData.Rprice < +formData.Dprice){
+        return setError('The discounted price cannot be greater then regular price.');
+      }
+      setLoading(true);
+      setError(false);
+
+      const res = await fetch('/api/ground/create', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if(data.success === false){
+        console.log(data);
+        setError(data);
+        setLoading(false);
+        return;
+      }
+
+      console.log(data);
+      setLoading(false);
+      setError(false);
+      navigate(`/grounds/${data._id}`);
+    }catch(err){
+      setLoading(false);
+      setError(err);
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-semibold my-6 text-center">
         Create a Cmaping Ground.
       </h1>
-      <form className="flex flex-col sm:flex-row gap-10 mt-16">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-10 mt-16">
         <div className="flex flex-col flex-1 gap-5">
           <input
             type="text"
@@ -329,7 +370,7 @@ const CreateGround = () => {
             Add Location of Camp Ground :
           </span>
           <input
-            type="number"
+            type="text"
             name="Latitude"
             placeholder="Latitude : 51.505 (Only Value)"
             className="p-3 border border-gray-500 rounded-lg"
@@ -339,7 +380,7 @@ const CreateGround = () => {
           />
 
           <input
-            type="number"
+            type="text"
             name="Longitude"
             placeholder="Longitude : -36.56 (Only value)"
             className="p-3 border border-gray-500 rounded-lg"
@@ -367,6 +408,7 @@ const CreateGround = () => {
               <button
                 onClick={handleImageUpload}
                 type="button"
+                disabled={!files || files?.length === 0 || imageLoading}
                 className="p-3 text-green-900 border text-xl border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
               >
                 {imageLoading ? "Uploading..." : "Upload"}
@@ -383,8 +425,8 @@ const CreateGround = () => {
               </p>
             )}
           </div>
-          <button className="p-3 bg-slate-800 text-white rounded-lg text-xl">
-            Create CampGround
+          <button disabled={loading || imageLoading} type='submit' className="disabled:opacity-70 p-3 bg-slate-800 text-white rounded-lg text-xl">
+            {loading ? "Creating CampGround..." : "Create CampGround"}
           </button>
         </div>
       </form>

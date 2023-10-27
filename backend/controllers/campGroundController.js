@@ -11,36 +11,49 @@ const createGrounds = asyncHnadler( async(req, res) => {
         name,
         description,
         address,
-        regularPrice,
-        discountedPrice,
-        offer,
-        imageUrls,
-        capacity,
+        pets,
+        tours,
+        rentalEquip,
+        foodService,
+        accommodation,
+        intake,
         sites,
+        Rprice,
+        Dprice,
         amenities,
         activities,
-        pets,
+        imageUrls,
+        Latitude,
+        Longitude,
         userRef,
     } = req.body; // Assuming you're sending data in the request body
 
-    if(!name ||
-        !description ||
-        !address ||
-        !regularPrice ||
-        !discountedPrice ||
-        !offer ||
-        !imageUrls ||
-        !capacity ||
-        !sites ||
-        !amenities ||
-        !activities ||
-        !pets
-    ){
-        return res.status(400).json({msg:'Please fill all fields.'});
-    }
+    const lat = parseFloat(Latitude);
+    const lng = parseFloat(Longitude);
 
     try{
-        const savedGround = await Ground.create(req.body);
+        const savedGround = await Ground.create({
+            name,
+            description,
+            address,
+            // Convert "on" and "off" to boolean values
+            "pets" : pets === "on",
+            "tours": tours === "on",
+            "rentalEquip": rentalEquip === "on",
+            "foodService": foodService === "on",
+            accommodation,
+            intake,
+            sites,
+            Rprice,
+            Dprice,
+            amenities,
+            activities,
+            lat,
+            lng,
+            imageUrls,
+            userRef: req.user.objId,
+        });
+
         return res.status(200).json(savedGround);
     }catch(err){
         const error = new Error(`Error creatin a ground ${err}`);

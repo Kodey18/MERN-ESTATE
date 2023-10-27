@@ -30,7 +30,7 @@ const groundSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
-    Accommodations: {
+    accommodation: {
       type: String,
       required: true,
     },
@@ -48,7 +48,6 @@ const groundSchema = new mongoose.Schema(
     },
     Dprice: {
       type: Number,
-      default: null,
       required: true,
     },
     amenities: {
