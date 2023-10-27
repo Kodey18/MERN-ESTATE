@@ -98,4 +98,5 @@ const getUserGorunds = asyncHandler( async(req, res) => {
 module.exports = {
     updateUser,
     deleteUser,
+    getUserGorunds,
 }
