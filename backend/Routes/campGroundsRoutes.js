@@ -4,4 +4,6 @@ const verifyToekn = require('../utils/verifyToken');
 
 Router.post('/create', verifyToekn, campGroundController.createGrounds);
 
+Router.delete('/delete/:id', verifyToekn, campGroundController.deleteGround);
+
 module.exports = Router;

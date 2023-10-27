@@ -61,6 +61,14 @@ const createGrounds = asyncHnadler( async(req, res) => {
     }
 });
 
+/*
+Desc : Route to delete a listed camping ground.
+Route: DELETE /api/ground/create
+access: private
+*/
+const deleteGround = asyncHnadler( async(req, res) => {});
+
 module.exports = {
     createGrounds,
+    deleteGround,
 };

@@ -41,7 +41,7 @@ const Profile = () => {
 
   return (
     <div >
-        <div className='max-w-lg p-5 flex flex-col gap-1'>
+        <div className='max-w-lg p-5 flex flex-col gap-2'>
             <button onClick={handleShowGrounds} className='max-w-xs rounded-lg bg-slate-700 text-white font-semibold p-3 text-lg'>
                 {groundLoad ? "loading Grounds..." : "Show Grounds"}
             </button>
