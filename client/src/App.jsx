@@ -27,7 +27,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path='/update-profile' element={<UpdateProfile />} />
           <Route path='/create-ground' element={<CreateGround />} />
-          <Route path='/update-ground' element={<UpdateGround />} />
+          <Route path='/update-ground/:groundId' element={<UpdateGround />} />
         </Route>
 
       </Routes>

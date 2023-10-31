@@ -166,8 +166,16 @@ const updateCamp = asyncHnadler( async(req, res) => {
     }catch(err){}
 })
 
+/*
+Desc : Route to get a ground
+Route: GET /api/ground/ground/:id
+access: private
+*/
+const getGround = asyncHnadler( async() => {});
+
 module.exports = {
     createGrounds,
     deleteGround,
     updateCamp,
+    getGround,
 };

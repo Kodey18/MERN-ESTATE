@@ -151,7 +151,7 @@ const CreateGround = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-semibold my-6 text-center">
-        Create a Camping Ground.
+        Update Camping Ground.
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-10 mt-16">
         <div className="flex flex-col flex-1 gap-5">
