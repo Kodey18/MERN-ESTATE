@@ -86,10 +86,12 @@ const Profile = () => {
                                     <span className='uppercase'>delete</span> 
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
-                                <button className='text-green-700 text-lg flex gap-1 items-center font-semibold'>
+                                <Link to={`/update-ground/${ground._id}`}>
+                                    <button className='text-green-700 text-lg flex gap-1 items-center font-semibold'>
                                     <span className='uppercase'>Edit</span> 
                                     <FontAwesomeIcon icon={faEdit} />
-                                </button>
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     })}

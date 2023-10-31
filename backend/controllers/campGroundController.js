@@ -95,7 +95,7 @@ Desc : Route to update a listed camping ground.
 Route: POST /api/ground/update/:id
 access: private
 */
-const updateGround = asyncHnadler( async(req, res) => {
+const updateCamp = asyncHnadler( async(req, res) => {
     const {
         name,
         description,
@@ -169,5 +169,5 @@ const updateGround = asyncHnadler( async(req, res) => {
 module.exports = {
     createGrounds,
     deleteGround,
-    updateGround,
+    updateCamp,
 };

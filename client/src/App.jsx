@@ -9,6 +9,7 @@ import Header from './components/Header'
 import PrivateRoutes from './components/PrivateRoutes'
 import CreateGround from './pages/CreateGround'
 import UpdateProfile from './pages/UpdateProfile'
+import UpdateGround from './pages/UpdateGround'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path='/update-profile' element={<UpdateProfile />} />
           <Route path='/create-ground' element={<CreateGround />} />
+          <Route path='/update-ground' element={<UpdateGround />} />
         </Route>
 
       </Routes>
