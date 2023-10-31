@@ -156,22 +156,43 @@ const updateCamp = asyncHnadler( async(req, res) => {
     }
 
     try{
-        const updatedGround = await Ground.findByIdAndUpdate(
+        const updateGround = await Ground.findByIdAndUpdate(
             req.params.id,
             uground,
             { new: true }
         );
 
         return res.status(200).json(updateGround);
-    }catch(err){}
+    }catch(err){
+
+    }
 })
 
 /*
 Desc : Route to get a ground
-Route: GET /api/ground/ground/:id
+Route: GET /api/grounds/ground/:id
 access: private
 */
-const getGround = asyncHnadler( async() => {});
+const getGround = asyncHnadler( async() => {
+    try{
+        const gid = req.params.id;
+
+        const ground = await Ground.findById(gid);
+
+        if(!ground){
+            const error = new Error(`Ground not found`);
+            error.statusCode = 400;
+            throw error;
+        }
+
+        return res.status(200).json(ground);
+
+    }catch(err){
+        const error = new Error(`error at getting ground : ${err}`);
+        error.statusCode = 400;
+        throw error;
+    }
+});
 
 module.exports = {
     createGrounds,

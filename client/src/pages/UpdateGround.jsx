@@ -36,6 +36,8 @@ const UpdateGround = () => {
   useEffect(() => { 
     const fetchGround =  async() => {
       const groundId = params.groundId;
+
+      const res = await fetch(`/api/grounds/`)
     }
   }, []);
 

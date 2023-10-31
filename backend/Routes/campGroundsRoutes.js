@@ -2,7 +2,7 @@ const Router = require('express').Router();
 const campGroundController = require('../controllers/campGroundController');
 const verifyToekn = require('../utils/verifyToken');
 
-Router.get('/ground/:id', verifyToekn, campGroundController.getGround)
+Router.get('/grounds/:id', campGroundController.getGround);
 
 Router.post('/create', verifyToekn, campGroundController.createGrounds);
 
