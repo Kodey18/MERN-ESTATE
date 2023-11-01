@@ -24,7 +24,7 @@
         color var(--trans-dur);
 } */
 
-.bgdiv{
+/* .bgdiv{
     
     background-color: var(--bg);
     color: var(--fg);
@@ -34,7 +34,7 @@
     transition:
         background-color var(--trans-dur),
         color var(--trans-dur);
-}
+} */
 
 .bike {
     display: block;
