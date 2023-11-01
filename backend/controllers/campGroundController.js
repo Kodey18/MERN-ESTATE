@@ -112,12 +112,9 @@ const updateCamp = asyncHnadler( async(req, res) => {
         amenities,
         activities,
         imageUrls,
-        Latitude,
-        Longitude,
+        lat,
+        lng,
     } = req.body;
-
-    const lat = parseFloat(Latitude);
-    const lng = parseFloat(Longitude);
 
     const ground = await Ground.findById(req.params.id);
 
@@ -127,7 +124,11 @@ const updateCamp = asyncHnadler( async(req, res) => {
         throw error;
     }
 
-    if(req.user.id !== ground.userRef.toString()){
+    console.log('req : ',req.body);
+
+    console.log(req.user.objId);
+
+    if(req.user.objId !== ground.userRef.toString()){
         const error = new Error(`You can only edit your own Ground.`);
         error.statusCode = 401;
         throw error;
@@ -155,6 +156,8 @@ const updateCamp = asyncHnadler( async(req, res) => {
         userRef: req.user.objId,
     }
 
+    console.log(`new updated ground : ${uground}`);
+
     try{
         const updateGround = await Ground.findByIdAndUpdate(
             req.params.id,
@@ -164,7 +167,9 @@ const updateCamp = asyncHnadler( async(req, res) => {
 
         return res.status(200).json(updateGround);
     }catch(err){
-
+        const error = new Error(`error at getting ground : ${err}`);
+        error.statusCode = 400;
+        throw error;
     }
 })
 
@@ -173,7 +178,7 @@ Desc : Route to get a ground
 Route: GET /api/grounds/ground/:id
 access: private
 */
-const getGround = asyncHnadler( async() => {
+const getGround = asyncHnadler( async(req, res) => {
     try{
         const gid = req.params.id;
 

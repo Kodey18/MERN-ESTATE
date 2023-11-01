@@ -84,6 +84,11 @@ const getUserGorunds = asyncHandler( async(req, res) => {
     } else {
         try{
             const grounds = await Ground.find({userRef : req.params.id});
+            if(grounds.length == 0){
+                const error = new Error("No user Ground Found", err);
+                error.statusCode = 401;
+                throw error;
+            }
             return res.status(200).json(grounds);
         }catch(err){
             const error = new Error("error while getting ground", err);

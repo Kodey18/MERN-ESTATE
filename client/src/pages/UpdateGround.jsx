@@ -6,7 +6,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateGround = () => {
   const [files, setFiles] = useState([]);
@@ -32,13 +32,32 @@ const UpdateGround = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
+
+  console.log(formData)
 
   useEffect(() => { 
     const fetchGround =  async() => {
       const groundId = params.groundId;
 
-      const res = await fetch(`/api/grounds/`)
+      const res = await fetch(`/api/ground/grounds/${groundId}`,{
+        method:"GET",
+        headers:{
+          'Content-Type': 'application/json'
+        },
+      });
+
+      const data = await res.json();
+      if(data.success == false){
+        setError(data.message);
+        return;
+      }
+
+      console.log(data);
+      setFormData(data);
     }
+
+    fetchGround();
   }, []);
 
   const handleImageUpload = (e) => {
@@ -129,6 +148,7 @@ const UpdateGround = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const groundId = params.groundId;
     try {
       if (formData.imageUrls.length < 1) {
         return setError("You must upload atleast 1 image.");
@@ -141,7 +161,7 @@ const UpdateGround = () => {
       setLoading(true);
       setError(false);
 
-      const res = await fetch("/api/ground/create", {
+      const res = await fetch(`/api/ground/update/${groundId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -157,7 +177,6 @@ const UpdateGround = () => {
         return;
       }
 
-      console.log(data);
       setLoading(false);
       setError(false);
       navigate(`/grounds/${data._id}`);
@@ -170,7 +189,7 @@ const UpdateGround = () => {
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-semibold my-6 text-center">
-        Create a Camping Ground.
+        Update Camping Ground.
       </h1>
       <form
         onSubmit={handleSubmit}
@@ -180,7 +199,6 @@ const UpdateGround = () => {
           <input
             type="text"
             name="name"
-            placeholder="Name"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleChange}
@@ -189,21 +207,19 @@ const UpdateGround = () => {
           <textarea
             type="text"
             name="description"
-            placeholder="Description"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleChange}
             value={formData.description}
           />
-          <input
+          {/* <input
             type="text"
             name="address"
-            placeholder="Address"
             className="p-3 border rounded-lg border-gray-500"
             required
             onChange={handleChange}
             value={formData.address}
-          />
+          /> */}
           <div className="flex gap-4 flex-wrap">
             <div className="p-2 bg-slate-400 rounded-lg flex gap-2 text-lg font-semibold">
               <input
@@ -370,7 +386,6 @@ const UpdateGround = () => {
             type="text"
             name="amenities"
             id="amenities"
-            placeholder="Amenities (comma-separated)"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleStringChange}
@@ -381,35 +396,32 @@ const UpdateGround = () => {
             type="text"
             name="activities"
             id="activities"
-            placeholder="Activities (comma-separated)"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleStringChange}
             value={formData.activities}
           />
 
-          <span className="font-semibold text-lg">
+          {/* <span className="font-semibold text-lg">
             Add Location of Camp Ground :
           </span>
           <input
             type="text"
-            name="Latitude"
-            placeholder="Latitude : 51.505 (Only Value)"
+            name="lat"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleChange}
-            // value={formData.lat}
+            value={formData.lat}
           />
 
           <input
             type="text"
-            name="Longitude"
-            placeholder="Longitude : -36.56 (Only value)"
+            name="lng"
             className="p-3 border border-gray-500 rounded-lg"
             required
             onChange={handleChange}
-            // value={formData.lng}
-          />
+            value={formData.lng}
+          /> */}
 
           <div className="flex flex-col gap-2">
             <p className="font-semibold">
@@ -452,7 +464,7 @@ const UpdateGround = () => {
             type="submit"
             className="disabled:opacity-70 p-3 bg-slate-800 text-white rounded-lg text-xl"
           >
-            {loading ? "Creating CampGround..." : "Create CampGround"}
+            {loading ? "Updating CampGround..." : "Update CampGround"}
           </button>
         </div>
       </form>
