@@ -179,7 +179,7 @@ const UpdateGround = () => {
 
       setLoading(false);
       setError(false);
-      navigate(`/grounds/${data._id}`);
+      navigate(`/campGround/${data._id}`);
     } catch (err) {
       setLoading(false);
       setError(err);

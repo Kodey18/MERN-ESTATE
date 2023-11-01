@@ -10,6 +10,7 @@ import PrivateRoutes from './components/PrivateRoutes'
 import CreateGround from './pages/CreateGround'
 import UpdateProfile from './pages/UpdateProfile'
 import UpdateGround from './pages/UpdateGround'
+import Ground from './pages/Ground'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/about" element={<About />} />
+        <Route path='/campGround/:groundId' element={<Ground />} />
 
         {/* Protected Routes */}
         <Route element={<PrivateRoutes />}>
