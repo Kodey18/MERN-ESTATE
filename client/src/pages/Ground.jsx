@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import CycleLoader from '../components/CycleLoader';
 
 const Ground = () => {
     const params = useParams();
     const [ground, setGround] = useState({});
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     console.log(ground);
 
@@ -12,6 +14,8 @@ const Ground = () => {
         const fetchGround = async () => {
             const groundId = params.groundId;
 
+            setLoading(true);
+            setError(false);
             const res = await fetch(`/api/ground/grounds/${groundId}`, {
                 method: "GET",
                 headers: {
@@ -22,18 +26,38 @@ const Ground = () => {
             const data = await res.json();
             if (data.success == false) {
                 setError(data.message);
+                setTimeout(()=>{
+                    setLoading(false);
+                }, 1500);
+                setError(data.message);
                 return;
             }
 
             console.log(data);
             setGround(data);
+            setTimeout(() => {
+                setLoading(false);
+            }, 1500);
+            setError(false);
         };
 
         fetchGround();
-    }, []);
+    }, [params.groundId]);
 
   return (
-    <div>Ground</div>
+    <div>
+        {
+        loading ? 
+            <CycleLoader /> : 
+        error ? 
+            <div>
+                {error}
+            </div> :
+            <>
+                Ground
+            </>
+        }
+    </div>
   )
 }
 
