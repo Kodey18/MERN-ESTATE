@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CycleLoader from '../components/CycleLoader';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import SwiperCore from 'swiper';
+import {Navigation} from 'swiper/modules';
+import 'swiper/css/bundle';
 
 const Ground = () => {
     const params = useParams();
     const [ground, setGround] = useState({});
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    SwiperCore.use([Navigation]);
 
     console.log(ground);
 

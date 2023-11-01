@@ -73,11 +73,11 @@ const Profile = () => {
                     {userGrounds.map((ground, index) => {
                         return <div className='gap-3 border border-gray-500 flex justify-between items-center rounded-lg p-3' key={ground._id}
                         >
-                            <Link to={`/grounds/${ground._id}`}>
+                            <Link to={`/campGrounds/${ground._id}`}>
                                 <img className='h-20 w-24 object-cover' src={ground.imageUrls[0]} alt="Ground Cover" />
                             </Link>
                             <Link className='text-slate-700 font-semibold flex-1 text-xl truncate hover:underline' 
-                            to={`/grounds/${ground._id}`}
+                            to={`/campGround/${ground._id}`}
                             >
                                 <p>{ground.name}</p>
                             </Link>
