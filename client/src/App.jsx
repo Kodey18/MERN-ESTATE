@@ -11,6 +11,7 @@ import CreateGround from './pages/CreateGround'
 import UpdateProfile from './pages/UpdateProfile'
 import UpdateGround from './pages/UpdateGround'
 import Ground from './pages/Ground'
+import Search from './pages/Search'
 
 export default function App() {
   return (
@@ -21,12 +22,12 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/about" element={<About />} />
         <Route path='/campGround/:groundId' element={<Ground />} />
+        <Route path='/search' element={<Search />} />
 
         {/* Protected Routes */}
         <Route element={<PrivateRoutes />}>
-          <Route path="/profile" element={<Profile />} />
+          {/* <Route path="/profile" element={<Profile />} /> */}
           <Route path='/update-profile' element={<UpdateProfile />} />
           <Route path='/create-ground' element={<CreateGround />} />
           <Route path='/update-ground/:groundId' element={<UpdateGround />} />

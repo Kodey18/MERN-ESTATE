@@ -10,4 +10,8 @@ Router.delete('/delete/:id', verifyToekn, campGroundController.deleteGround);
 
 Router.post('/update/:id', verifyToekn, campGroundController.updateCamp);
 
+Router.get('/grounds', campGroundController.getGrounds);
+
+Router.get('/groundInfo', campGroundController.getGroundInfo);
+
 module.exports = Router;

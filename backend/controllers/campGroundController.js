@@ -2,6 +2,60 @@ const asyncHnadler = require('express-async-handler');
 const Ground = require('../models/groundModel');
 
 /*
+Desc: Routes to get multiple camping ground.
+Route: POST /api/ground/grounds
+Access: Private (Token)
+*/
+const getGrounds = asyncHnadler( async(req, res) => {
+    try{
+        const limit = parseInt(req.query.limit) || 9;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+
+        let foodService = req.query.foodService;
+        if(foodService == undefined || foodService === 'false'){
+            foodService = { $in : [false, true]};
+        };
+
+        let rentalEquip = req.query.rentalEquip;
+        if(rentalEquip == undefined || rentalEquip === 'false'){
+            rentalEquip = { $in : [false, true]};
+        };
+
+        let pets = req.query.pets;
+        if(pets == undefined || pets === 'false'){
+            pets = { $in : [false, true]};
+        };
+
+        let tours = req.query.tours;
+        if(tours == undefined || tours === 'false'){
+            tours = { $in : [false, true]};
+        }
+
+        const searchTerm = req.query.searchTerm || '';
+        const sort = req.query.sort || 'createdAt';
+        const order = req.query.order || 'desc';
+
+        const grounds = await Ground.find({
+            name: { $regex: searchTerm, $options: "i" },
+            foodService,
+            tours,
+            rentalEquip,
+            pets,
+        })
+            .sort({ [sort]: order })
+            .limit(limit)
+            .skip(startIndex);
+
+        return res.status(200).json(grounds);
+
+    }catch(err){
+        const error = new Error(`Error seraching grounds ${err}`);
+        error.statusCode = 400;
+        throw error;
+    }
+})
+
+/*
 Desc: Routes to create a camping ground.
 Route: POST /api/ground/create
 Access: Private (Token)
@@ -30,16 +84,18 @@ const createGrounds = asyncHnadler( async(req, res) => {
     const lat = parseFloat(Latitude);
     const lng = parseFloat(Longitude);
 
+    console.log(req.body);
+
     try{
         const savedGround = await Ground.create({
             name,
             description,
             address,
             // Convert "on" and "off" to boolean values
-            "pets" : pets === "on",
-            "tours": tours === "on",
-            "rentalEquip": rentalEquip === "on",
-            "foodService": foodService === "on",
+            "pets" : pets,
+            "tours": tours,
+            "rentalEquip": rentalEquip,
+            "foodService": foodService,
             accommodation,
             intake,
             sites,
@@ -139,10 +195,10 @@ const updateCamp = asyncHnadler( async(req, res) => {
         description,
         address,
         // Convert "on" and "off" to boolean values
-        "pets" : pets === "on",
-        "tours": tours === "on",
-        "rentalEquip": rentalEquip === "on",
-        "foodService": foodService === "on",
+        pets,
+        tours,
+        rentalEquip,
+        foodService,
         accommodation,
         intake,
         sites,
@@ -199,9 +255,32 @@ const getGround = asyncHnadler( async(req, res) => {
     }
 });
 
+const getGroundInfo = asyncHnadler( async(req, res) => {
+    try {
+        // Query the database to retrieve the required fields
+        const groundsInfo = await Ground.find({}, "_id name lat lng");
+
+        // Map the results to a new array of objects
+        const formattedData = groundsInfo.map((ground) => ({
+            _id: ground._id,
+            name: ground.name,
+            lat: ground.lat,
+            lng: ground.lng,
+        }));
+
+        return res.status(200).json(formattedData);
+    } catch (err) {
+        const error = new Error(`Error fetching grounds info: ${err}`);
+        error.statusCode = 500; // You can set an appropriate status code
+        throw error;
+    }
+});
+
 module.exports = {
     createGrounds,
     deleteGround,
     updateCamp,
     getGround,
+    getGrounds,
+    getGroundInfo,
 };

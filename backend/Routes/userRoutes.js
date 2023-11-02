@@ -9,4 +9,6 @@ Router.delete('/delete/:id', verifyToekn, userController.deleteUser);
 
 Router.get(`/userGrounds/:id`, verifyToekn, userController.getUserGorunds);
 
+Router.get('/contact/:id', verifyToekn, userController.getContact);
+
 module.exports = Router;

@@ -3,9 +3,9 @@ import './CycleLoader.css';
 
 const CycleLoader = () => {
   return (
-    <div className='bgdiv mt-12 flex flex-col items-center'>
+    <div className='bgdiv flex flex-col items-center bgdiv justify-center min-h-[80vh]'>
 
-        <svg className="bike" viewBox="0 0 48 30" width="20px" height="20px">
+        <svg className="bike" viewBox="0 0 48 30" width="50px" height="50px">
             <g
             fill="none"
             stroke="currentColor"
@@ -68,10 +68,6 @@ const CycleLoader = () => {
             />
             </g>
         </svg>
-
-        <h1 className='text-slate-700 font-bold text-xl'>
-            Loading...
-        </h1>
     </div>
   );
 }

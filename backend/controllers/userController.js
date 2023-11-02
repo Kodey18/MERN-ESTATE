@@ -4,6 +4,30 @@ const User = require('../models/userModel');
 const Ground = require('../models/groundModel');
 
 /*
+Desc : Get the user to contact
+Route : GET /api/user/contact/:id
+access : Private
+*/
+const getContact = asyncHandler( async(req, res) => {
+    try{
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+          const error = new Error("User not found");
+          error.statusCode = 401;
+          throw error;
+        }
+
+        const { password, ...rest } = user;
+        return res.status(200).json(rest);
+    }catch(err){
+        const error = new Error("error while finding user : ", err``);
+        error.statusCode = 401;
+        throw error;
+    }
+});
+
+/*
 Desc : update the user details
 Route : POST /api/user/upload
 access : Private
@@ -104,4 +128,5 @@ module.exports = {
     updateUser,
     deleteUser,
     getUserGorunds,
+    getContact,
 }
